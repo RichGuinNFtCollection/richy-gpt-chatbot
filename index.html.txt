@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Richy – The RichGuin Travel Assistant</title>
+  <style>
+    body { font-family: sans-serif; background: #f9f9f9; padding: 20px; }
+    #chatbox { max-width: 600px; margin: auto; border: 1px solid #ccc; border-radius: 10px; padding: 15px; background: white; }
+    #messages { max-height: 400px; overflow-y: auto; margin-bottom: 10px; }
+    .msg { margin: 5px 0; }
+    .user { font-weight: bold; color: #2a2a2a; }
+    .bot { color: #333; }
+    input[type="text"] { width: 80%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+    button { padding: 10px 15px; border: none; background: #0077cc; color: white; border-radius: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div id="chatbox">
+    <h2>💬 Richy – The RichGuin Travel Assistant</h2>
+    <div id="messages"></div>
+    <input type="text" id="userInput" placeholder="Ask Richy about eSIMs, flights, or travel tips..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    const messagesDiv = document.getElementById("messages");
+    const userInput = document.getElementById("userInput");
+
+    async function sendMessage() {
+      const userMessage = userInput.value;
+      if (!userMessage.trim()) return;
+
+      messagesDiv.innerHTML += `<div class='msg user'>You: ${userMessage}</div>`;
+      userInput.value = "";
+
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: userMessage })
+      });
+
+      const data = await response.json();
+      const reply = data.reply || "Sorry, something went wrong.";
+      messagesDiv.innerHTML += `<div class='msg bot'>Richy: ${reply}</div>`;
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+  </script>
+</body>
+</html>
