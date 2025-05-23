@@ -6,12 +6,14 @@ export const config = {
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
+    console.error("Invalid method:", req.method);
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   const { message } = req.body;
 
   if (!message) {
+    console.error("No message provided in request body");
     return res.status(400).json({ error: "No message provided" });
   }
 
@@ -40,12 +42,14 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    if (!data || !data.choices || !data.choices[0]) {
-      return res.status(500).json({ reply: "OpenAI response error." });
+    if (!response.ok) {
+      console.error("OpenAI error:", data);
+      return res.status(500).json({ reply: "OpenAI API returned an error." });
     }
 
     return res.status(200).json({ reply: data.choices[0].message.content });
   } catch (error) {
+    console.error("Fetch failed:", error);
     return res.status(500).json({ reply: "Server error." });
   }
 }
