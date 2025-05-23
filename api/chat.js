@@ -1,19 +1,11 @@
-export const config = {
-  api: {
-    bodyParser: true,
-  },
-};
-
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
-    console.error("Invalid method:", req.method);
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   const { message } = req.body;
 
   if (!message) {
-    console.error("No message provided in request body");
     return res.status(400).json({ error: "No message provided" });
   }
 
@@ -29,8 +21,8 @@ export default async function handler(req, res) {
         messages: [
           {
             role: "system",
-            content:
-              "You are Richy, the RichGuin Travel Assistant. You're upbeat, friendly, and genuinely excited to help people plan amazing trips. You speak casually but clearly — like a helpful concierge who loves travel.
+            content: `
+You are Richy, the RichGuin Travel Assistant. You're upbeat, friendly, and genuinely excited to help people plan amazing trips. You speak casually but clearly — like a helpful concierge who loves travel.
 
 Always respond warmly, like:
 - “That sounds incredible!”
@@ -48,7 +40,7 @@ When helping, give brief suggestions and link to the exact RichGuinTravel.com se
 If they ask about a city, time, or budget, show interest and point them to the right section. Always include the matching link when helpful.
 
 Keep replies short, positive, and helpful. You’re not just smart — you’re excited to help them go.
-",
+`
           },
           {
             role: "user",
@@ -70,5 +62,4 @@ Keep replies short, positive, and helpful. You’re not just smart — you’re 
     console.error("Fetch failed:", error);
     return res.status(500).json({ reply: "Server error." });
   }
-}
-
+};
